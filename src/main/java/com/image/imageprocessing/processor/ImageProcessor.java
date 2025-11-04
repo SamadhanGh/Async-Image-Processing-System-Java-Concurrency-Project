@@ -1,59 +1,77 @@
 package com.image.imageprocessing.processor;
 
 import com.image.imageprocessing.filter.ImageFilter;
-import com.image.imageprocessing.image.DrawMultipleImagesOnCanvas;
-import com.image.imageprocessing.image.ImageData;
 
 import java.awt.image.BufferedImage;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.concurrent.Callable;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
-import java.util.concurrent.Future;
+import java.util.concurrent.*;
 
 public class ImageProcessor {
 
-    private ExecutorService executorService;
-    private DrawMultipleImagesOnCanvas drawFn;
+    private final ExecutorService virtualThreadExecutor;
 
-    public ImageProcessor(){
-        executorService = Executors.newFixedThreadPool(100);
+    public ImageProcessor() {
+        virtualThreadExecutor = Executors.newVirtualThreadPerTaskExecutor();
     }
 
-    public void processImage(BufferedImage image, int num, ImageFilter imageFilter, DrawMultipleImagesOnCanvas drawFn){
-        int numHorizontalImages = image.getWidth() / num;
-        int numVerticalImages = image.getHeight() / num;
+    public BufferedImage processImageWithFilter(BufferedImage image, ImageFilter imageFilter) throws InterruptedException, ExecutionException {
+        int tileSize = 50;
+        int width = image.getWidth();
+        int height = image.getHeight();
 
-        List<Future<ImageData>> futures = new ArrayList<>();
+        int numHorizontalTiles = (width + tileSize - 1) / tileSize;
+        int numVerticalTiles = (height + tileSize - 1) / tileSize;
 
-        for (int i = 0; i<numHorizontalImages; i++){
-            for(int j=0; j<numVerticalImages; j++){
-                BufferedImage subImage = image.getSubimage(i*num, j*num, num, num);
-                int finalI = i;
-                int finalJ = j;
-                Future<ImageData> future = executorService.submit(new Callable<ImageData>() {
-                    @Override
-                    public ImageData call(){
-                        BufferedImage result = imageFilter.filter(subImage);
-                        ImageData imageData = new ImageData(result, finalI *num, finalJ *num, num, num);
-                        // Add to queue immediately when processing is complete
-                        drawFn.addImageToQueue(imageData);
-                        return imageData;
-                    }
+        BufferedImage resultImage = new BufferedImage(width, height, image.getType());
+
+        List<Future<TileResult>> futures = new ArrayList<>();
+
+        for (int i = 0; i < numHorizontalTiles; i++) {
+            for (int j = 0; j < numVerticalTiles; j++) {
+                final int x = i * tileSize;
+                final int y = j * tileSize;
+                final int tileWidth = Math.min(tileSize, width - x);
+                final int tileHeight = Math.min(tileSize, height - y);
+
+                Future<TileResult> future = virtualThreadExecutor.submit(() -> {
+                    BufferedImage subImage = image.getSubimage(x, y, tileWidth, tileHeight);
+                    BufferedImage processedTile = imageFilter.filter(subImage);
+                    return new TileResult(processedTile, x, y);
                 });
+
                 futures.add(future);
             }
         }
 
-        for (Future<ImageData> future : futures) {
+        for (Future<TileResult> future : futures) {
             try {
-                future.get();
+                TileResult result = future.get();
+                int[] rgb = new int[result.tile.getWidth() * result.tile.getHeight()];
+                result.tile.getRGB(0, 0, result.tile.getWidth(), result.tile.getHeight(), rgb, 0, result.tile.getWidth());
+                resultImage.setRGB(result.x, result.y, result.tile.getWidth(), result.tile.getHeight(), rgb, 0, result.tile.getWidth());
             } catch (Exception ex) {
-                System.err.println("Error processing image: " + ex.getMessage());
+                System.err.println("Error processing tile: " + ex.getMessage());
+                throw ex;
             }
         }
 
+        return resultImage;
     }
 
+    public void shutdown() {
+        virtualThreadExecutor.shutdown();
+    }
+
+    private static class TileResult {
+        final BufferedImage tile;
+        final int x;
+        final int y;
+
+        TileResult(BufferedImage tile, int x, int y) {
+            this.tile = tile;
+            this.x = x;
+            this.y = y;
+        }
+    }
 }
