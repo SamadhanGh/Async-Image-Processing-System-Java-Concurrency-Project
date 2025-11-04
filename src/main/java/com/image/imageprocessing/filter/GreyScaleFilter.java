@@ -3,10 +3,14 @@ package com.image.imageprocessing.filter;
 import java.awt.*;
 import java.awt.image.BufferedImage;
 
-public class GreyScaleFilter implements ImageFilter{
+/**
+ * Converts color images to grayscale using luminosity method.
+ * Uses weighted RGB values to produce natural-looking grayscale images.
+ */
+public class GreyScaleFilter implements ImageFilter {
 
     @Override
-    public BufferedImage filter(BufferedImage originalImage){
+    public BufferedImage filter(BufferedImage originalImage) {
         int width = originalImage.getWidth();
         int height = originalImage.getHeight();
 
@@ -26,5 +30,4 @@ public class GreyScaleFilter implements ImageFilter{
         }
         return grayscaleImage;
     }
-
 }

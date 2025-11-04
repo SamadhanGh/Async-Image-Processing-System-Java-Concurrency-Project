@@ -3,6 +3,10 @@ package com.image.imageprocessing.filter;
 import java.awt.*;
 import java.awt.image.BufferedImage;
 
+/**
+ * Applies a sepia tone effect to create a warm, vintage appearance.
+ * Uses the standard sepia tone matrix for color transformation.
+ */
 public class SepiaFilter implements ImageFilter {
 
     @Override
