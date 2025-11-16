@@ -1,0 +1,227 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.ComboBox?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.ProgressBar?>
+<?import javafx.scene.control.ProgressIndicator?>
+<?import javafx.scene.layout.Region?>
+
+<?import javafx.scene.control.Separator?>
+<?import javafx.scene.control.TextArea?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.BorderPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.StackPane?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.text.Font?>
+
+<BorderPane xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1"
+            fx:controller="com.image.imageprocessing.ui.EnhancedImageProcessingController"
+            prefHeight="800.0" prefWidth="1400.0"
+            style="-fx-background-color: #ecf0f1;">
+
+    <!-- ========== TOP BAR ========== -->
+    <top>
+        <VBox spacing="10"
+              style="-fx-background-color: linear-gradient(to right, #2c3e50, #34495e); -fx-padding: 20;">
+            <HBox alignment="CENTER_LEFT" spacing="20">
+                <Label text="⚡ Async Image Processing System" textFill="white"
+                       style="-fx-font-weight: bold;">
+                    <font>
+                        <Font size="26"/>
+                    </font>
+                </Label>
+
+                <Region HBox.hgrow="ALWAYS"/>
+
+                <Label text="Java 21 | Virtual Threads | StructuredTaskScope"
+                       textFill="#ecf0f1">
+                    <font>
+                        <Font size="12"/>
+                    </font>
+                </Label>
+            </HBox>
+        </VBox>
+    </top>
+
+
+    <!-- ========== CENTER AREA WITH OVERLAY SUPPORT ========== -->
+    <center>
+        <StackPane fx:id="mainContentPane">
+
+            <!-- MAIN UI CONTENT -->
+            <VBox spacing="15" style="-fx-padding: 20;">
+
+                <!-- TOP BUTTON AREA -->
+                <HBox spacing="15" alignment="CENTER_LEFT"
+                      style="-fx-padding: 10; -fx-background-color: white;
+                             -fx-background-radius: 8;
+                             -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.15), 10, 0, 0, 2);">
+
+                    <Button fx:id="selectImageButton" text="📁 Select Image"
+                            onAction="#handleSelectImage"
+                            style="-fx-background-color: linear-gradient(to right, #3498db, #2980b9);
+                                   -fx-text-fill: white; -fx-font-size: 13px;
+                                   -fx-padding: 10 20; -fx-background-radius: 5;"/>
+
+                    <Separator orientation="VERTICAL"/>
+
+                    <Label text="Filter:" style="-fx-font-size: 13px; -fx-font-weight: bold;"/>
+
+                    <ComboBox fx:id="filterComboBox" prefWidth="180"
+                              style="-fx-font-size: 12px;"/>
+
+                    <Button fx:id="processImageButton" text="⚙ Process Image"
+                            onAction="#handleProcessImage"
+                            style="-fx-background-color: linear-gradient(to right, #27ae60, #1e8449);
+                                   -fx-text-fill: white; -fx-font-size: 13px;
+                                   -fx-padding: 10 20; -fx-background-radius: 5;"/>
+
+                    <Button fx:id="saveImageButton" text="💾 Save Result"
+                            onAction="#handleSaveImage"
+                            style="-fx-background-color: linear-gradient(to right, #e74c3c, #c0392b);
+                                   -fx-text-fill: white; -fx-font-size: 13px;
+                                   -fx-padding: 10 20; -fx-background-radius: 5;"/>
+                    <Button fx:id="shareImageButton" text="📤 Share"
+                            onAction="#handleShareImage"
+                            style="-fx-background-color: linear-gradient(to right, #9b59b6, #8e44ad);
+               -fx-text-fill: white; -fx-font-size: 13px;
+               -fx-padding: 10 20; -fx-background-radius: 5;"/>
+
+
+                    <Region HBox.hgrow="ALWAYS"/>
+
+                    <ProgressIndicator fx:id="progressIndicator"
+                                       prefHeight="30" prefWidth="30"/>
+
+                    <ProgressBar fx:id="progressBar"
+                                 prefWidth="150"/>
+                </HBox>
+
+                <!-- IMAGE PANELS -->
+                <HBox spacing="15" VBox.vgrow="ALWAYS">
+
+                    <!-- Original Image -->
+                    <VBox spacing="10" HBox.hgrow="ALWAYS">
+                        <StackPane fx:id="dragDropPane" VBox.vgrow="ALWAYS"
+                                   style="-fx-background-color: white;
+                                          -fx-border-color: #3498db;
+                                          -fx-border-width: 2;
+                                          -fx-border-style: dashed;
+                                          -fx-background-radius: 8;
+                                          -fx-border-radius: 8;">
+                            <VBox alignment="CENTER" spacing="10">
+                                <Label text="Original Image"
+                                       style="-fx-font-size: 16px;
+                                              -fx-font-weight: bold;
+                                              -fx-text-fill: #2c3e50;"/>
+
+                                <Label fx:id="dragDropLabel"
+                                       text="Drop image here or click 'Select Image'"
+                                       style="-fx-font-size: 12px; -fx-text-fill: #7f8c8d;"/>
+
+                                <ImageView fx:id="originalImageView"
+                                           preserveRatio="true"
+                                           fitWidth="600" fitHeight="450"/>
+                            </VBox>
+                        </StackPane>
+                    </VBox>
+
+
+                    <!-- Processed Image -->
+                    <VBox spacing="10" HBox.hgrow="ALWAYS">
+                        <StackPane VBox.vgrow="ALWAYS"
+                                   style="-fx-background-color: white;
+                                          -fx-border-color: #27ae60;
+                                          -fx-border-width: 2;
+                                          -fx-border-style: dashed;
+                                          -fx-background-radius: 8;
+                                          -fx-border-radius: 8;">
+                            <VBox alignment="CENTER" spacing="10">
+                                <Label text="Processed Image"
+                                       style="-fx-font-size: 16px;
+                                              -fx-font-weight: bold;
+                                              -fx-text-fill: #2c3e50;"/>
+
+                                <Label text="Result will appear here after processing"
+                                       style="-fx-font-size: 12px;
+                                              -fx-text-fill: #7f8c8d;"/>
+
+                                <ImageView fx:id="processedImageView"
+                                           preserveRatio="true"
+                                           fitWidth="600"
+                                           fitHeight="450"/>
+                            </VBox>
+                        </StackPane>
+                    </VBox>
+
+                </HBox>
+
+                <!-- METRICS + LOG -->
+                <VBox spacing="10"
+                      style="-fx-background-color: white;
+                             -fx-padding: 15;
+                             -fx-background-radius: 8;">
+
+                    <HBox spacing="10" alignment="CENTER_LEFT">
+                        <Label text="📊 Performance Metrics:"
+                               style="-fx-font-size: 14px; -fx-font-weight: bold;"/>
+                        <Label fx:id="metricsLabel"
+                               text="No processing yet"
+                               style="-fx-font-size: 13px; -fx-text-fill: #27ae60;"/>
+                    </HBox>
+
+                    <VBox spacing="5">
+                        <Label text="📝 Activity Log:"
+                               style="-fx-font-size: 13px; -fx-font-weight: bold;"/>
+                        <TextArea fx:id="logTextArea" editable="false"
+                                  wrapText="true"
+                                  prefHeight="100"
+                                  style="-fx-control-inner-background: #f8f9fa;
+                                         -fx-font-family: monospace;
+                                         -fx-font-size: 11px;"/>
+                    </VBox>
+                </VBox>
+
+            </VBox>
+
+            <!-- ========== OVERLAY (Processing Mask) ========== -->
+            <StackPane fx:id="processingOverlay"
+                       visible="false"
+                       mouseTransparent="false"
+                       style="-fx-background-color: rgba(0,0,0,0.45);">
+
+                <VBox alignment="CENTER" spacing="16">
+                    <ProgressIndicator fx:id="overlayLoader"
+                                       prefWidth="80" prefHeight="80"/>
+                    <Label fx:id="processingLabel"
+                           text="Processing image..."
+                           style="-fx-text-fill: white;
+                                  -fx-font-size: 20px;
+                                  -fx-font-weight: bold;"/>
+                </VBox>
+            </StackPane>
+
+        </StackPane>
+    </center>
+
+
+    <!-- ========== BOTTOM BAR ========== -->
+    <bottom>
+        <HBox style="-fx-background-color: #34495e; -fx-padding: 12;">
+            <Label fx:id="statusLabel"
+                   text="Ready to process images"
+                   textFill="white"
+                   style="-fx-font-size: 13px;"/>
+
+            <Region HBox.hgrow="ALWAYS"/>
+
+            <Label text="Built with ❤ using Java 21 &amp; JavaFX"
+                   textFill="#95a5a6"
+                   style="-fx-font-size: 11px;"/>
+        </HBox>
+    </bottom>
+
+</BorderPane>
