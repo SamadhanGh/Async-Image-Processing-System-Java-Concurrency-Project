@@ -391,7 +391,7 @@ https://youtu.be/STLD89tMFjc?si=umhrNnnQwL9diRg7
 ### Main Interface
 *Drag-and-drop interface with side-by-side image comparison*
 
-![Main Interface](https://via.placeholder.com/1200x600/2c3e50/ffffff?text=Main+Interface+Screenshot)
+![Main Interface](/home/samadhan/Downloads/image1.png)
 
 ### Processing in Action
 *Real-time metrics and progress indicators*
