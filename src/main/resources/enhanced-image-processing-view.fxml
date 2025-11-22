@@ -7,7 +7,6 @@
 <?import javafx.scene.control.ProgressBar?>
 <?import javafx.scene.control.ProgressIndicator?>
 <?import javafx.scene.layout.Region?>
-
 <?import javafx.scene.control.Separator?>
 <?import javafx.scene.control.TextArea?>
 <?import javafx.scene.image.ImageView?>
@@ -46,12 +45,10 @@
         </VBox>
     </top>
 
-
-    <!-- ========== CENTER AREA WITH OVERLAY SUPPORT ========== -->
+    <!-- ========== CENTER AREA ========== -->
     <center>
         <StackPane fx:id="mainContentPane">
 
-            <!-- MAIN UI CONTENT -->
             <VBox spacing="15" style="-fx-padding: 20;">
 
                 <!-- TOP BUTTON AREA -->
@@ -61,7 +58,7 @@
                              -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.15), 10, 0, 0, 2);">
 
                     <Button fx:id="selectImageButton" text="📁 Select Image"
-                            onAction="#handleSelectImage"
+                            onAction="#selectImage"
                             style="-fx-background-color: linear-gradient(to right, #3498db, #2980b9);
                                    -fx-text-fill: white; -fx-font-size: 13px;
                                    -fx-padding: 10 20; -fx-background-radius: 5;"/>
@@ -84,11 +81,12 @@
                             style="-fx-background-color: linear-gradient(to right, #e74c3c, #c0392b);
                                    -fx-text-fill: white; -fx-font-size: 13px;
                                    -fx-padding: 10 20; -fx-background-radius: 5;"/>
+
                     <Button fx:id="shareImageButton" text="📤 Share"
                             onAction="#handleShareImage"
                             style="-fx-background-color: linear-gradient(to right, #9b59b6, #8e44ad);
-               -fx-text-fill: white; -fx-font-size: 13px;
-               -fx-padding: 10 20; -fx-background-radius: 5;"/>
+                                   -fx-text-fill: white; -fx-font-size: 13px;
+                                   -fx-padding: 10 20; -fx-background-radius: 5;"/>
 
 
                     <Region HBox.hgrow="ALWAYS"/>
@@ -184,29 +182,10 @@
                                          -fx-font-size: 11px;"/>
                     </VBox>
                 </VBox>
-
             </VBox>
-
-            <!-- ========== OVERLAY (Processing Mask) ========== -->
-            <StackPane fx:id="processingOverlay"
-                       visible="false"
-                       mouseTransparent="false"
-                       style="-fx-background-color: rgba(0,0,0,0.45);">
-
-                <VBox alignment="CENTER" spacing="16">
-                    <ProgressIndicator fx:id="overlayLoader"
-                                       prefWidth="80" prefHeight="80"/>
-                    <Label fx:id="processingLabel"
-                           text="Processing image..."
-                           style="-fx-text-fill: white;
-                                  -fx-font-size: 20px;
-                                  -fx-font-weight: bold;"/>
-                </VBox>
-            </StackPane>
 
         </StackPane>
     </center>
-
 
     <!-- ========== BOTTOM BAR ========== -->
     <bottom>

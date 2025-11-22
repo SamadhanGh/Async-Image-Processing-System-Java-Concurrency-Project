@@ -3,10 +3,6 @@ package com.image.imageprocessing.filter;
 import java.awt.*;
 import java.awt.image.BufferedImage;
 
-/**
- * Applies a sharpening filter to enhance edges and details in the image.
- * Uses a 3x3 convolution kernel for sharpening.
- */
 public class SharpenFilter implements ImageFilter {
 
     private static final double[][] SHARPEN_KERNEL = {

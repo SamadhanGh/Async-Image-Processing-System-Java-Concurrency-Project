@@ -3,10 +3,6 @@ package com.image.imageprocessing.filter;
 import java.awt.*;
 import java.awt.image.BufferedImage;
 
-/**
- * Applies a box blur filter to soften the image.
- * Uses a simple averaging technique within a radius of 2 pixels.
- */
 public class BlurFilter implements ImageFilter {
 
     @Override
